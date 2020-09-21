@@ -8,7 +8,8 @@ import java.util.List;
  */
 public class BasicUtils {
 
-    public static boolean isNullorEmpty(List list){
+    public static boolean isNullOrEmpty(List list){
         return list == null || list.isEmpty();
     }
+
 }

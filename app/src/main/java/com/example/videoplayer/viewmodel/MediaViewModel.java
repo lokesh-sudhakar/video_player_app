@@ -82,12 +82,7 @@ public class MediaViewModel extends AndroidViewModel {
                 },this::onErrorResponse));
     }
 
-
-    public MutableLiveData<List<Video>> getBookmarkVideos() {
-        return videosLiveData;
-    }
-
-    public void onVideosResponse(List<Video> videos) {
+    private void onVideosResponse(List<Video> videos) {
         videosLiveData.postValue(videos);
     }
 
@@ -97,7 +92,7 @@ public class MediaViewModel extends AndroidViewModel {
         }
     }
 
-    public void insertVideoToBookmarks(Video video) {
+    private void insertVideoToBookmarks(Video video) {
         compositeDisposable.add(repository.insert(video).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(()-> Log.d(TAG, "insert successful" +video.getPath())));
