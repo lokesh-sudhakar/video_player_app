@@ -24,6 +24,10 @@ public interface VideoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insert(Video video);
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Completable insertAll(List<Video> videos);
+
     @Update
     Completable updateVideo(Video video);
 

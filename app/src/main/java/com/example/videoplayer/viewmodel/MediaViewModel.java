@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.videoplayer.db.VideoRepository;
 import com.example.videoplayer.model.Video;
+import com.example.videoplayer.model.VideoResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 public class MediaViewModel extends AndroidViewModel {
 
     private static final String TAG = "MainActivity";
-    private MutableLiveData<List<Video>> videosLiveData = new MutableLiveData<>();
+    private MutableLiveData<VideoResponse> videosLiveData = new MutableLiveData<>();
     private VideoRepository repository;
     private CompositeDisposable compositeDisposable;
 
@@ -39,22 +40,22 @@ public class MediaViewModel extends AndroidViewModel {
         compositeDisposable = new CompositeDisposable();
     }
 
-    public MutableLiveData<List<Video>> fetchVideosFromDb() {
+    public MutableLiveData<VideoResponse> fetchVideosFromDb() {
         compositeDisposable.add(repository.fetchAllVideosFromDb()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onVideosResponse,this::onErrorResponse));
+                .subscribe((videos -> onVideosResponse(new VideoResponse(videos))), this::onErrorResponse));
         return videosLiveData;
     }
 
-    private List<Video>  getVideosFromStorage(){
+    private List<Video> getVideosFromStorage() {
         List<Video> videos = new ArrayList<>();
         Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Video.VideoColumns._ID,
                 MediaStore.Video.VideoColumns.DISPLAY_NAME,
                 MediaStore.Video.VideoColumns.DATA};
-        Cursor cursor =  this.getApplication().getContentResolver().query(uri,
+        Cursor cursor = this.getApplication().getContentResolver().query(uri,
                 projection, null, null, BaseColumns._ID + " ASC " + " LIMIT 30");
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -75,32 +76,37 @@ public class MediaViewModel extends AndroidViewModel {
         compositeDisposable.add(Single.fromCallable(this::getVideosFromStorage).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((videos) -> {
-                    for (Video video : videos) {
-                        insertVideoToDb(video);
+                    if (videos.isEmpty()) {
+                        onVideosResponse(new VideoResponse(new Throwable("No videos in Storage")));
+                        return;
                     }
-                    fetchVideosFromDb();
-                },this::onErrorResponse));
+                    insertVideoToDb(videos);
+                }, this::onErrorResponse));
     }
 
-    private void onVideosResponse(List<Video> videos) {
+    private void onVideosResponse(VideoResponse videos) {
         videosLiveData.postValue(videos);
     }
 
     private void onErrorResponse(Throwable throwable) {
-        if (throwable!=null) {
-            Log.d(TAG, "onErrorResponse: "+throwable.getMessage());
+        if (throwable != null) {
+            videosLiveData.postValue(new VideoResponse(throwable));
+            Log.d(TAG, "onErrorResponse: " + throwable.getMessage());
         }
     }
 
-    private void insertVideoToDb(Video video) {
-        compositeDisposable.add(repository.insert(video).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(()-> Log.d(TAG, "insert successful" +video.getPath())));
+    private void insertVideoToDb(List<Video> video) {
+        compositeDisposable.add(repository.insertAll(video).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Log.d(TAG, "insert successful" + video.size());
+                    fetchVideosFromDb();
+                }));
     }
 
     public void updateVideoToBookmarks(Video video) {
         compositeDisposable.add(repository.update(video).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(()-> Log.d(TAG, "update successful" +video.isBookMarked())));
+                .subscribe(() -> Log.d(TAG, "update successful" + video.isBookMarked())));
     }
 }

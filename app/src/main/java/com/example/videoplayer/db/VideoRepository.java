@@ -30,6 +30,10 @@ public class VideoRepository {
         return videoDao.insert(video);
     }
 
+    public Completable insertAll(List<Video> videos) {
+        return videoDao.insertAll(videos);
+    }
+
     public Completable update(Video video) {
         return videoDao.updateVideo(video);
     }

@@ -45,15 +45,20 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     }
 
     private void initViews() {
-        ViewUtils.setGone(binding.recyclerView);
         initRecyclerView();
-        ViewUtils.setVisible(binding.progressBar);
         listenToVideoDataFromDb();
+        ViewUtils.setGone(binding.recyclerView);
+        ViewUtils.setVisible(binding.progressBar);
     }
 
     private void listenToVideoDataFromDb() {
-        viewModel.fetchVideosFromDb().observe(this, videos -> {
-            if (BasicUtils.isNullOrEmpty(videos)) {
+        viewModel.fetchVideosFromDb().observe(this, videoResponse -> {
+            if (videoResponse.getError()!= null) {
+                Toast.makeText(this, videoResponse.getError().getMessage(),Toast.LENGTH_SHORT).show();
+                ViewUtils.setGone(binding.progressBar);
+                return;
+            }
+            if (BasicUtils.isNullOrEmpty(videoResponse.getVideos())) {
                 if(isExternalStoragePermissionGranted()) {
                     ViewUtils.setVisible(binding.progressBar);
                     viewModel.loadVideosInDb();
@@ -64,8 +69,8 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
             } else {
                 ViewUtils.setGone(binding.progressBar);
                 ViewUtils.setVisible(binding.recyclerView);
-                adapter.updateVideos(videos);
-                binding.recyclerView.updateVideos(videos);
+                adapter.updateVideos(videoResponse.getVideos());
+                binding.recyclerView.updateVideos(videoResponse.getVideos());
             }
         });
     }
