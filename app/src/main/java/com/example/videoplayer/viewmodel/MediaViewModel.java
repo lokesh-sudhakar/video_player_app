@@ -80,7 +80,7 @@ public class MediaViewModel extends AndroidViewModel {
                         onVideosResponse(new VideoResponse(new Throwable("No videos in Storage")));
                         return;
                     }
-                    insertVideoToDb(videos);
+                    insertVideosToDb(videos);
                 }, this::onErrorResponse));
     }
 
@@ -95,7 +95,7 @@ public class MediaViewModel extends AndroidViewModel {
         }
     }
 
-    private void insertVideoToDb(List<Video> video) {
+    private void insertVideosToDb(List<Video> video) {
         compositeDisposable.add(repository.insertAll(video).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {

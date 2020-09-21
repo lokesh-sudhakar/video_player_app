@@ -26,10 +26,6 @@ public class VideoRepository {
         return videoDao.getAllVideos();
     }
 
-    public Completable insert(Video video) {
-        return videoDao.insert(video);
-    }
-
     public Completable insertAll(List<Video> videos) {
         return videoDao.insertAll(videos);
     }
