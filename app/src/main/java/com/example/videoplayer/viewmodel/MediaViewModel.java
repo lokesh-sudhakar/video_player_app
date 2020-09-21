@@ -109,4 +109,10 @@ public class MediaViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> Log.d(TAG, "update successful" + video.isBookMarked())));
     }
+
+    @Override
+    protected void onCleared () {
+        compositeDisposable.dispose();
+        super.onCleared();
+    }
 }

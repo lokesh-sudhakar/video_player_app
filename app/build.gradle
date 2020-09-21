@@ -24,6 +24,19 @@ android {
     dataBinding {
         enabled true
     }
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+    }
 }
 
 dependencies {
