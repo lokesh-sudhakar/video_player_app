@@ -1,19 +1,20 @@
-package com.example.videoplayer;
+package com.example.videoplayer.adapter;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.videoplayer.R;
+import com.example.videoplayer.databinding.LayoutVideoItemBinding;
 import com.example.videoplayer.listeners.ItemClickListeners;
 import com.example.videoplayer.model.Video;
 import com.example.videoplayer.utils.BasicUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ import java.util.List;
 public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "MainActivity";
+    private LayoutVideoItemBinding binding;
     List<Video> videos;
     Context context;
     private ItemClickListeners itemClickListeners;
@@ -44,8 +46,8 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_video_item, parent, false);
-        return new VideoPlayerViewHolder(view,context);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_item, parent, false);
+        return new VideoPlayerViewHolder(binding,context);
     }
 
     @Override
@@ -56,7 +58,10 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        VideoPlayerViewHolder viewHolder = (VideoPlayerViewHolder) holder;
+        releasePlayer((VideoPlayerViewHolder) holder);
+    }
+
+    private void releasePlayer(@NonNull VideoPlayerViewHolder viewHolder) {
         if (viewHolder.getLayoutPosition()!= -1 &&
                 videos.get(viewHolder.getLayoutPosition()).getVideoPlayer()!= null) {
             Log.d(TAG, "onViewRecycled: position released"+ viewHolder.getLayoutPosition());
@@ -67,7 +72,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        if (BasicUtils.isNullorEmpty(videos)) {
+        if (BasicUtils.isNullOrEmpty(videos)) {
             return  0;
         }
         return videos.size();

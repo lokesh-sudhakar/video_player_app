@@ -1,14 +1,11 @@
-package com.example.videoplayer;
+package com.example.videoplayer.adapter;
 
 import android.content.Context;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.videoplayer.databinding.LayoutVideoItemBinding;
 import com.example.videoplayer.listeners.ItemClickListeners;
 import com.example.videoplayer.model.Video;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -20,7 +17,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -33,30 +29,24 @@ import com.google.android.exoplayer2.util.Util;
  */
 public class VideoPlayerViewHolder extends RecyclerView.ViewHolder  {
 
-    private PlayerView playerView;
     private Context context;
     private Video mediaObject;
-    private ItemClickListeners itemClickListeners;
-    private ImageView bookmarkBtn;
-    private ImageView playImageView;
-    private TextView textView;
+    private LayoutVideoItemBinding binding;
 
 
 
-    public VideoPlayerViewHolder(@NonNull View itemView, Context context) {
-        super(itemView);
+    public VideoPlayerViewHolder(@NonNull LayoutVideoItemBinding binding, Context context) {
+        super(binding.getRoot());
+        this.binding = binding;
         this.context = context;
-        playerView = itemView.findViewById(R.id.video_view);
-        bookmarkBtn = itemView.findViewById(R.id.bookmarkBtn);
-        playImageView = itemView.findViewById(R.id.playBtn);
-        textView = itemView.findViewById(R.id.title);
     }
 
     public void onBind(Video mediaObject, ItemClickListeners itemClickListeners) {
         this.mediaObject = mediaObject;
-        this.itemClickListeners = itemClickListeners;
-        textView.setText(mediaObject.getName());
         initializePlayer();
+        binding.setMediaObject(this.mediaObject);
+        binding.setListener(itemClickListeners);
+        binding.executePendingBindings();
     }
 
     private void initializePlayer() {
@@ -70,20 +60,6 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder  {
             buildMediaSource();
         }
         mediaObject.getVideoPlayer().setRepeatMode(ExoPlayer.REPEAT_MODE_ONE);
-        playerView.setPlayer(mediaObject.getVideoPlayer());
-        playerView.setUseController(false);
-        if (mediaObject.getVideoPlayer().getPlayWhenReady()) {
-            playImageView.setVisibility(View.GONE);
-        } else {
-            playImageView.setVisibility(View.VISIBLE);
-        }
-        if (mediaObject.isBookMarked()) {
-            bookmarkBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_bookmark_select));
-        } else {
-            bookmarkBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_bookmark_unselect));
-        }
-        bookmarkBtn.setOnClickListener(view -> itemClickListeners.onBookMarkClick(mediaObject));
-        itemView.setOnClickListener(view -> itemClickListeners.itemClick(mediaObject));
     }
 
     private void buildMediaSource() {
