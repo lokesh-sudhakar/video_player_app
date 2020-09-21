@@ -33,25 +33,19 @@ public class VideoRecyclerView extends RecyclerView {
 
     public VideoRecyclerView(@NonNull Context context) {
         super(context);
-        init(context);
     }
 
     public VideoRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
     }
 
     public VideoRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
-    }
-
-    public void init(Context context) {
-
     }
 
     public void attach(List<Video> videos) {
         this.videoDataList = videos;
+        setHasFixedSize(true);
         attachPageSnapHelper();
         disableChangeAnimations();
         addScrollListener();

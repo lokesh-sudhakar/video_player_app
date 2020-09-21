@@ -1,7 +1,6 @@
 package com.example.videoplayer.db;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -12,8 +11,6 @@ import com.example.videoplayer.model.Video;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -26,9 +23,6 @@ public interface VideoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insert(Video video);
-
-    @Delete
-    Completable deleteVideo(Video video);
 
     @Update
     Completable updateVideo(Video video);

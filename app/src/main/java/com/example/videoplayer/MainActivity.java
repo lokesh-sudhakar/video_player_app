@@ -152,6 +152,4 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         viewModel.updateVideoToBookmarks(mediaData);
         adapter.notifyDataSetChanged();
     }
-
-
 }

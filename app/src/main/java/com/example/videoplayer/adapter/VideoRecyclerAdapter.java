@@ -24,9 +24,8 @@ import java.util.List;
 public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "MainActivity";
-    private LayoutVideoItemBinding binding;
-    List<Video> videos;
-    Context context;
+    private List<Video> videos;
+    private Context context;
     private ItemClickListeners itemClickListeners;
 
     public VideoRecyclerAdapter(List<Video> videos,Context context, ItemClickListeners itemClickListeners) {
@@ -46,7 +45,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_item, parent, false);
+        LayoutVideoItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_video_item, parent, false);
         return new VideoPlayerViewHolder(binding,context);
     }
 

@@ -7,8 +7,6 @@ import com.example.videoplayer.model.Video;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -24,16 +22,12 @@ public class VideoRepository {
         videoDao = db.videoDao();
     }
 
-    public Single<List<Video>> fetchAllBookmarkedVideos() {
+    public Single<List<Video>> fetchAllVideosFromDb() {
         return videoDao.getAllVideos();
     }
 
     public Completable insert(Video video) {
         return videoDao.insert(video);
-    }
-
-    public Completable delete(Video video) {
-        return videoDao.deleteVideo(video);
     }
 
     public Completable update(Video video) {

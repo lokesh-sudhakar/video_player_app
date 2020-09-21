@@ -1,9 +1,7 @@
 package com.example.videoplayer.model;
 
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.provider.MediaStore;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -35,8 +33,6 @@ public class Video {
     @Ignore
     private Uri uri;
     @Ignore
-    private Bitmap thumbNail;
-    @Ignore
     private SimpleExoPlayer videoPlayer;
 
 
@@ -48,10 +44,6 @@ public class Video {
 
     public String getPath() {
         return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getName() {
@@ -69,18 +61,6 @@ public class Video {
         return this.uri;
     }
 
-    public void setUri(Uri uri) {
-        this.uri = uri;
-    }
-
-    public Bitmap getThumbNail() {
-        return thumbNail;
-    }
-
-    public void setThumbNail(Bitmap thumbNail) {
-        this.thumbNail = thumbNail;
-    }
-
     public SimpleExoPlayer getVideoPlayer() {
         return videoPlayer;
     }
@@ -91,10 +71,6 @@ public class Video {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public boolean isBookMarked() {

@@ -40,7 +40,7 @@ public class MediaViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Video>> fetchVideosFromDb() {
-        compositeDisposable.add(repository.fetchAllBookmarkedVideos()
+        compositeDisposable.add(repository.fetchAllVideosFromDb()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onVideosResponse,this::onErrorResponse));
@@ -76,7 +76,7 @@ public class MediaViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((videos) -> {
                     for (Video video : videos) {
-                        insertVideoToBookmarks(video);
+                        insertVideoToDb(video);
                     }
                     fetchVideosFromDb();
                 },this::onErrorResponse));
@@ -92,7 +92,7 @@ public class MediaViewModel extends AndroidViewModel {
         }
     }
 
-    private void insertVideoToBookmarks(Video video) {
+    private void insertVideoToDb(Video video) {
         compositeDisposable.add(repository.insert(video).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(()-> Log.d(TAG, "insert successful" +video.getPath())));
