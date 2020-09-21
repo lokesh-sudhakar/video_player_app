@@ -6,6 +6,7 @@
         <variable name="mediaObject" type="com.example.videoplayer.model.Video"/>
         <variable name="listener" type="com.example.videoplayer.listeners.ItemClickListeners"/>
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"

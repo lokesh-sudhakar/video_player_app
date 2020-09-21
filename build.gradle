@@ -25,3 +25,16 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+
+    //version
+    versionCode = 1
+    versionName = "1.0"
+
+    lifecycleVersion = "2.2.0"
+    exoPlayerVersion = "2.8.4"
+    rxJava = "2.2.2"
+    rxAndroid = "2.1.0"
+    roomVersion = "2.3.0-alpha02"
+}
